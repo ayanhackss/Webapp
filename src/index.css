@@ -1,0 +1,186 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Noto Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #FFFEF7;
+}
+
+/* Custom scrollbar - Royal Theme */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #FAF8F3;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #8B1538 0%, #D4AF37 100%);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #6B0F2A 0%, #B8941F 100%);
+}
+
+/* Gold Gradient Text Utility */
+.text-gold-gradient {
+  background: linear-gradient(135deg, #D4AF37 0%, #F4D03F 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Burgundy Gradient Text Utility */
+.text-burgundy-gradient {
+  background: linear-gradient(135deg, #8B1538 0%, #B8264D 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Royal Gradient Background */
+.bg-royal-gradient {
+  background: linear-gradient(135deg, #8B1538 0%, #6B0F2A 50%, #D4AF37 100%);
+}
+
+/* Gold Shimmer Effect */
+.gold-shimmer {
+  background: linear-gradient(90deg,
+      #D4AF37 0%,
+      #F4D03F 50%,
+      #D4AF37 100%);
+  background-size: 200% auto;
+  animation: shimmer 2s linear infinite;
+}
+
+/* Ornate Border */
+.ornate-border {
+  border: 2px solid;
+  border-image: linear-gradient(135deg, #D4AF37, #F4D03F, #D4AF37) 1;
+  position: relative;
+}
+
+.ornate-border::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(135deg, #D4AF37, #F4D03F);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Luxury Shadow */
+.luxury-shadow {
+  box-shadow:
+    0 4px 20px rgba(212, 175, 55, 0.2),
+    0 10px 40px rgba(139, 21, 56, 0.15);
+}
+
+/* Premium Card Hover */
+.premium-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.premium-card:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 8px 30px rgba(212, 175, 55, 0.3),
+    0 15px 50px rgba(139, 21, 56, 0.2);
+}
+
+/* Smooth transitions */
+.transition-all {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+}
+
+/* Animation utilities */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-in {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% center;
+  }
+
+  100% {
+    background-position: 200% center;
+  }
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Chart.js responsive container */
+.chart-container {
+  position: relative;
+  width: 100%;
+  height: 300px;
+}
+
+/* Selection color - Gold */
+::selection {
+  background-color: #F4D03F;
+  color: #1F1F1F;
+}
+
+::-moz-selection {
+  background-color: #F4D03F;
+  color: #1F1F1F;
+}
