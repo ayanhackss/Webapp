@@ -99,14 +99,7 @@ const Navbar = () => {
                 )}
               </div>
 
-              <div className="relative">
-                <button className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-burgundy-700 dark:text-gold-300 hover:text-burgundy-900 dark:hover:text-gold-100 hover:bg-burgundy-50 dark:hover:bg-burgundy-900 rounded-lg transition-colors">
-                  Legal
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
-              </div>
+
 
               <button
                 onClick={toggleDarkMode}
@@ -136,37 +129,33 @@ const Navbar = () => {
           </div>
 
           {isOpen && (
-            <div className="md:hidden border-t border-burgundy-200/30 dark:border-gold-500/30 mt-2 animate-in slide-in-from-top-2 duration-200">
-              <div className="flex flex-col gap-0.5 py-2 px-2">
+            <div className="md:hidden absolute top-full left-0 right-0 mt-2 mx-4 p-4 bg-cream dark:bg-charcoal rounded-2xl shadow-burgundy-lg border border-burgundy-200/20 dark:border-gold-500/20 animate-in slide-in-from-top-4 fade-in duration-300 z-50">
+              <div className="flex flex-col gap-2">
                 <button
                   onClick={() => { scrollToSection('analyzer-section'); setIsOpen(false); }}
-                  className="text-left px-4 py-3 text-base font-medium text-burgundy-700 dark:text-gold-300 hover:bg-burgundy-50 dark:hover:bg-burgundy-900 hover:text-burgundy-900 dark:hover:text-gold-100 rounded-xl transition-colors"
+                  className="w-full text-center px-4 py-3 text-lg font-medium text-burgundy-800 dark:text-gold-200 hover:bg-burgundy-50 dark:hover:bg-burgundy-900/50 rounded-xl transition-all"
                 >
                   Analyzer
                 </button>
                 <button
                   onClick={() => { scrollToSection('about-section'); setIsOpen(false); }}
-                  className="text-left px-4 py-3 text-base font-medium text-burgundy-700 dark:text-gold-300 hover:bg-burgundy-50 dark:hover:bg-burgundy-900 hover:text-burgundy-900 dark:hover:text-gold-100 rounded-xl transition-colors"
+                  className="w-full text-center px-4 py-3 text-lg font-medium text-burgundy-800 dark:text-gold-200 hover:bg-burgundy-50 dark:hover:bg-burgundy-900/50 rounded-xl transition-all"
                 >
                   About
                 </button>
                 <button
                   onClick={() => { scrollToSection('features-section'); setIsOpen(false); }}
-                  className="text-left px-4 py-3 text-base font-medium text-burgundy-700 dark:text-gold-300 hover:bg-burgundy-50 dark:hover:bg-burgundy-900 hover:text-burgundy-900 dark:hover:text-gold-100 rounded-xl transition-colors"
+                  className="w-full text-center px-4 py-3 text-lg font-medium text-burgundy-800 dark:text-gold-200 hover:bg-burgundy-50 dark:hover:bg-burgundy-900/50 rounded-xl transition-all"
                 >
                   Features
                 </button>
-                <div className="border-t border-burgundy-200/30 dark:border-gold-500/30 my-1.5 mx-2"></div>
-                <button
-                  className="text-left px-4 py-3 text-base font-medium text-burgundy-700 dark:text-gold-300 hover:bg-burgundy-50 dark:hover:bg-burgundy-900 hover:text-burgundy-900 dark:hover:text-gold-100 rounded-xl transition-colors"
-                >
-                  Legal
-                </button>
+                <div className="border-t border-burgundy-100 dark:border-gold-500/10 my-2"></div>
+
                 <button
                   onClick={toggleDarkMode}
-                  className="text-left px-4 py-3 text-base font-medium text-burgundy-700 dark:text-gold-300 hover:bg-burgundy-50 dark:hover:bg-burgundy-900 hover:text-burgundy-900 dark:hover:text-gold-100 rounded-xl transition-colors flex items-center gap-2.5"
+                  className="w-full flex items-center justify-center gap-3 px-4 py-3 text-lg font-medium text-burgundy-800 dark:text-gold-200 hover:bg-burgundy-50 dark:hover:bg-burgundy-900/50 rounded-xl transition-all"
                 >
-                  <span className="text-lg">{isDark ? '☀️' : '🌙'}</span>
+                  {isDark ? <span className="text-xl">☀️</span> : <span className="text-xl">🌙</span>}
                   <span>{isDark ? 'Light Mode' : 'Dark Mode'}</span>
                 </button>
               </div>
