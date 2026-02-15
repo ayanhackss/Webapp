@@ -8,6 +8,11 @@ import OpenAI from 'openai';
 import axios from 'axios';
 import * as cheerio from 'cheerio';
 import NodeCache from 'node-cache';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -15,9 +20,18 @@ const PORT = process.env.PORT || 3000;
 const limiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 100, message: { error: 'Too many requests' } });
 const cache = new NodeCache({ stdTTL: 300, checkperiod: 60 });
 
-app.use(cors());
+app.use(cors({
+  origin: true,
+  credentials: true
+}));
 app.use(express.json());
 app.use(express.static('dist'));
+
+// SPA fallback - serve index.html for all non-API routes
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+});
+
 app.use('/api', limiter);
 
 const supabaseUrl = process.env.SUPABASE_URL;
@@ -74,7 +88,7 @@ class AdvancedScorer {
 
   async fetchWebsite() {
     const response = await axios.get(this.url, {
-      timeout: 15000,
+      timeout: 30000,
       headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' },
       maxRedirects: 5, validateStatus: (status) => status < 400
     });
@@ -281,7 +295,7 @@ class AdvancedScorer {
   async checkAdsTxt() {
     try {
       const adsTxtUrl = this.url.replace(/\/$/, '') + '/ads.txt';
-      const response = await axios.head(adsTxtUrl, { timeout: 3000 });
+      const response = await axios.head(adsTxtUrl, { timeout: 10000 });
       return response.status === 200;
     } catch { return false; }
   }
@@ -575,5 +589,3 @@ app.get('/api/health', (req, res) => {
 app.listen(PORT, () => {
   console.log('CheckAdSense server running on http://localhost:' + PORT);
 });
-
-
