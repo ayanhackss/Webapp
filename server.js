@@ -10,9 +10,12 @@ import * as cheerio from 'cheerio';
 import NodeCache from 'node-cache';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import https from 'https';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+import helmet from 'helmet';
+import compression from 'compression';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -26,6 +29,8 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(express.static('dist'));
+app.use(helmet());
+app.use(compression());
 
 // SPA fallback - serve index.html for all non-API routes
 app.get('*', (req, res) => {
@@ -90,7 +95,8 @@ class AdvancedScorer {
     const response = await axios.get(this.url, {
       timeout: 30000,
       headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' },
-      maxRedirects: 5, validateStatus: (status) => status < 400
+      maxRedirects: 5, validateStatus: (status) => status < 400,
+      httpsAgent: new https.Agent({ rejectUnauthorized: false })
     });
 
     const $ = cheerio.load(response.data);
@@ -228,6 +234,10 @@ class AdvancedScorer {
     else if (metadata.paragraphCount >= 15) { score += 4; details.push('Moderate paragraphs'); }
     else { issues.push('Low paragraph count'); }
 
+    // Sentence Clarity Check (Avg words per sentence)
+    if (metadata.avgWordsPerSentence > 25) { issues.push('Long sentences (hard to read)'); tips.push('Shorten sentences for better readability'); }
+    else if (metadata.avgWordsPerSentence > 0) { details.push('Good sentence length'); }
+
     const imagesWithAlt = metadata.images.filter(img => img.hasAlt).length;
     if (metadata.imageCount >= 8) { score += 5; details.push(`Good images: ${metadata.imageCount}`); }
     else if (metadata.imageCount >= 4) { score += 3; details.push('Some images'); }
@@ -289,13 +299,17 @@ class AdvancedScorer {
     if (foundIssues.length === 0) { score += 5; details.push('No problematic content'); }
     else { score += 1; issues.push('Problematic content detected'); }
 
+    // Copyright Check
+    if (/copyright|©|all rights reserved/i.test(html)) { score += 2; details.push('Copyright notice present'); }
+    else { tips.push('Add a copyright notice in the footer'); }
+
     this.results.policyCompliance = { score: Math.min(score, 30), max: 30, details, issues, tips };
   }
 
   async checkAdsTxt() {
     try {
       const adsTxtUrl = this.url.replace(/\/$/, '') + '/ads.txt';
-      const response = await axios.head(adsTxtUrl, { timeout: 10000 });
+      const response = await axios.head(adsTxtUrl, { timeout: 10000, httpsAgent: new https.Agent({ rejectUnauthorized: false }) });
       return response.status === 200;
     } catch { return false; }
   }
@@ -327,6 +341,14 @@ class AdvancedScorer {
 
     if (metadata.hasSitemap) { score += 4; details.push('Sitemap.xml detected'); }
     else { tips.push('Consider adding sitemap.xml'); }
+
+    // Language Attribute Check
+    if (metadata.language && metadata.language !== 'not specified') { score += 2; details.push(`Language specified: ${metadata.language}`); }
+    else { issues.push('HTML language attribute missing'); tips.push('Add <html lang="en"> tag'); }
+
+    // Robots Meta Tag Check
+    if (metadata.hasRobots) { score += 2; details.push('Robots.txt detected'); }
+    else { tips.push('Add robots.txt file'); }
 
     this.results.technicalSEO = { score: Math.min(score, 40), max: 40, details, issues, tips };
   }
@@ -586,6 +608,10 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-app.listen(PORT, () => {
-  console.log('CheckAdSense server running on http://localhost:' + PORT);
-});
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log('AiForNation server running on http://localhost:' + PORT);
+  });
+}
+
+export default app;
