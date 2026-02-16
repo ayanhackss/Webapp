@@ -42,8 +42,17 @@ app.use('/api', limiter);
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_KEY;
 const supabase = (supabaseUrl && supabaseUrl.startsWith('http')) ? createClient(supabaseUrl, supabaseKey) : null;
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+// Lazy init for AI clients to prevent startup crash if keys are missing
+let genAI;
+try {
+  if (process.env.GEMINI_API_KEY) genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+} catch (e) { console.error('Gemini init failed:', e.message); }
+
+let openai;
+try {
+  if (process.env.OPENAI_API_KEY) openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+} catch (e) { console.error('OpenAI init failed:', e.message); }
 
 // Scoring Engine
 class AdvancedScorer {

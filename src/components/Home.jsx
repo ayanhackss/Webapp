@@ -50,7 +50,22 @@ const Home = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ url: normalizedUrl })
       });
-      const data = await response.json();
+      
+      const textData = await response.text();
+      let data;
+      
+      try {
+        data = JSON.parse(textData);
+      } catch (e) {
+        console.error('JSON Parse Error:', e);
+        if (textData.includes('504')) {
+           throw new Error('Analysis timed out (limit is 10s on free Vercel). Please try a faster site.');
+        } else if (textData.includes('500')) {
+           throw new Error('Server error. Please check API keys in Vercel settings.');
+        }
+        throw new Error(`Server returned unexpected data: ${textData.substring(0, 50)}...`);
+      }
+
       if (data.success) {
         navigate('/result', { state: { results: data.data, url: url } });
       } else {
